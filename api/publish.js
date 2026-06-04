@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   try {
 
-    // Fetch keyword from Google Sheet
+    // Get next keyword from Google Sheet
     const sheetResponse = await fetch(process.env.SHEET_URL);
     const sheetData = await sheetResponse.json();
 
@@ -15,6 +15,7 @@ export default async function handler(req, res) {
     const keyword = sheetData.keyword;
     const slug = sheetData.slug;
 
+    // Generate article with OpenAI
     const openaiResponse = await fetch(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -25,6 +26,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
+          temperature: 0.7,
           messages: [
             {
               role: "system",
@@ -57,14 +59,32 @@ Return ONLY valid JSON:
 
     const openaiData = await openaiResponse.json();
 
-    const article = JSON.parse(
-      openaiData.choices[0].message.content
-    );
+    if (!openaiData.choices) {
+      return res.status(500).json({
+        success: false,
+        error: openaiData
+      });
+    }
 
+    let article;
+
+    try {
+      article = JSON.parse(
+        openaiData.choices[0].message.content
+      );
+    } catch (e) {
+      return res.status(500).json({
+        success: false,
+        error: "Invalid JSON returned by OpenAI"
+      });
+    }
+
+    // WordPress Authentication
     const auth = Buffer.from(
       `${process.env.WORDPRESS_USERNAME}:${process.env.WORDPRESS_APP_PASSWORD}`
     ).toString("base64");
 
+    // Publish to WordPress
     const wpResponse = await fetch(
       `${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts`,
       {
@@ -83,6 +103,25 @@ Return ONLY valid JSON:
     );
 
     const wpPost = await wpResponse.json();
+
+    // WordPress failure protection
+    if (!wpPost.id) {
+      return res.status(500).json({
+        success: false,
+        error: wpPost
+      });
+    }
+
+    // Mark Google Sheet row as Published
+    await fetch(process.env.SHEET_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        row: sheetData.row
+      })
+    });
 
     return res.status(200).json({
       success: true,
