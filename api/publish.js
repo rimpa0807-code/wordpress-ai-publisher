@@ -1,12 +1,19 @@
 export default async function handler(req, res) {
   try {
-    const keyword = req.query.keyword;
 
-    if (!keyword) {
-      return res.status(400).json({
-        error: "keyword parameter is required"
+    // Fetch keyword from Google Sheet
+    const sheetResponse = await fetch(process.env.SHEET_URL);
+    const sheetData = await sheetResponse.json();
+
+    if (!sheetData.keyword) {
+      return res.status(200).json({
+        success: false,
+        message: "No Pending Keywords"
       });
     }
+
+    const keyword = sheetData.keyword;
+    const slug = sheetData.slug;
 
     const openaiResponse = await fetch(
       "https://api.openai.com/v1/chat/completions",
@@ -25,16 +32,17 @@ export default async function handler(req, res) {
 You are an expert SEO content writer.
 
 Generate:
-1. SEO-friendly title
-2. Meta description
-3. Long-form blog article (minimum 1200 words)
+
+1. SEO Title
+2. Meta Description
+3. Long Form Article (1500+ words)
 
 Return ONLY valid JSON:
 
 {
-  "title": "",
-  "metaDescription": "",
-  "content": ""
+  "title":"",
+  "metaDescription":"",
+  "content":""
 }
 `
             },
@@ -42,20 +50,12 @@ Return ONLY valid JSON:
               role: "user",
               content: keyword
             }
-          ],
-          temperature: 0.7
+          ]
         })
       }
     );
 
     const openaiData = await openaiResponse.json();
-
-    if (!openaiData.choices) {
-      return res.status(500).json({
-        success: false,
-        error: openaiData
-      });
-    }
 
     const article = JSON.parse(
       openaiData.choices[0].message.content
@@ -76,6 +76,7 @@ Return ONLY valid JSON:
         body: JSON.stringify({
           title: article.title,
           content: article.content,
+          slug: slug.replace("/", ""),
           status: "publish"
         })
       }
@@ -86,6 +87,7 @@ Return ONLY valid JSON:
     return res.status(200).json({
       success: true,
       keyword,
+      slug,
       postId: wpPost.id,
       postUrl: wpPost.link
     });
