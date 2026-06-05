@@ -70,8 +70,10 @@ Content Guidelines:
 
 SEO Requirements:
 
-- Create a compelling SEO title
+- Create a compelling article title
+- Create a separate SEO title optimized for Google
 - Create a meta description between 140 and 160 characters
+- Create a focus keyword matching search intent
 - Naturally include the target keyword
 - Use keyword in introduction
 - Use keyword in at least one H2
@@ -99,6 +101,7 @@ Return ONLY valid JSON:
 
 {
   "title":"",
+  "seoTitle":"",
   "metaDescription":"",
   "focusKeyword":"",
   "content":""
@@ -146,7 +149,13 @@ Return ONLY valid JSON:
           content: article.content,
           excerpt: article.metaDescription,
           slug: slug.replace("/", ""),
-          status: "publish"
+          status: "publish",
+
+          meta: {
+            _yoast_wpseo_title: article.seoTitle,
+            _yoast_wpseo_metadesc: article.metaDescription,
+            _yoast_wpseo_focuskw: article.focusKeyword
+          }
         })
       }
     );
@@ -168,6 +177,8 @@ Return ONLY valid JSON:
       success: true,
       keyword,
       slug,
+      seoTitle: article.seoTitle,
+      focusKeyword: article.focusKeyword,
       postId: wpPost.id,
       postUrl: wpPost.link
     });
