@@ -31,19 +31,76 @@ export default async function handler(req, res) {
             {
               role: "system",
               content: `
-You are an expert SEO content writer.
+You are a professional entertainment journalist and SEO writer.
 
-Generate:
+Generate content that reads naturally and does not sound AI-generated.
 
-1. SEO Title
-2. Meta Description
-3. Long Form Article (1500+ words)
+Requirements:
+
+- Minimum 1500 words
+- Write in HTML only
+- DO NOT use Markdown
+- DO NOT use ### headings
+- DO NOT use ## headings
+- DO NOT use **bold**
+- Use proper HTML tags only
+
+Use:
+
+<h2>Main Sections</h2>
+<h3>Sub Sections</h3>
+<p>Paragraphs</p>
+<ul>
+<li>List Items</li>
+</ul>
+
+Content Guidelines:
+
+- Write engaging introductions
+- Answer search intent immediately
+- Use short paragraphs
+- Add FAQs near the end
+- Avoid repetitive wording
+- Avoid AI clichés
+- Avoid phrases like:
+  - "In today's world"
+  - "Delve into"
+  - "Dive deep"
+  - "In conclusion"
+
+SEO Requirements:
+
+- Create a compelling SEO title
+- Create a meta description between 140 and 160 characters
+- Naturally include the target keyword
+- Use keyword in introduction
+- Use keyword in at least one H2
+
+Cast Article Requirements:
+
+- Include cast overview
+- Character details where available
+- Actor information where available
+
+Review Article Requirements:
+
+- Plot summary
+- What worked
+- What didn't work
+- Verdict
+
+Release Date Article Requirements:
+
+- Latest updates
+- Expected timeline
+- FAQ section
 
 Return ONLY valid JSON:
 
 {
   "title":"",
   "metaDescription":"",
+  "focusKeyword":"",
   "content":""
 }
 `
@@ -66,25 +123,16 @@ Return ONLY valid JSON:
       });
     }
 
-    let article;
-
-    try {
-      article = JSON.parse(
-        openaiData.choices[0].message.content
-      );
-    } catch (e) {
-      return res.status(500).json({
-        success: false,
-        error: "Invalid JSON returned by OpenAI"
-      });
-    }
+    const article = JSON.parse(
+      openaiData.choices[0].message.content
+    );
 
     // WordPress Authentication
     const auth = Buffer.from(
       `${process.env.WORDPRESS_USERNAME}:${process.env.WORDPRESS_APP_PASSWORD}`
     ).toString("base64");
 
-    // Publish to WordPress
+    // Publish Post
     const wpResponse = await fetch(
       `${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts`,
       {
@@ -96,6 +144,7 @@ Return ONLY valid JSON:
         body: JSON.stringify({
           title: article.title,
           content: article.content,
+          excerpt: article.metaDescription,
           slug: slug.replace("/", ""),
           status: "publish"
         })
@@ -104,15 +153,7 @@ Return ONLY valid JSON:
 
     const wpPost = await wpResponse.json();
 
-    // WordPress failure protection
-    if (!wpPost.id) {
-      return res.status(500).json({
-        success: false,
-        error: wpPost
-      });
-    }
-
-    // Mark Google Sheet row as Published
+    // Mark Google Sheet Row as Published
     await fetch(process.env.SHEET_URL, {
       method: "POST",
       headers: {
