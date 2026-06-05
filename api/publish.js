@@ -149,7 +149,7 @@ Return ONLY valid JSON:
           content: article.content,
           excerpt: article.metaDescription,
           slug: slug.replace("/", ""),
-          status: "publish",
+          status: "draft",
 
           meta: {
             _yoast_wpseo_title: article.seoTitle,
