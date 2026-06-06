@@ -87,22 +87,115 @@ Use only:
 
 CAST ARTICLE TEMPLATE
 
-For keywords containing:
+CAST ARTICLE RULES
 
-cast
-actor
-actress
-characters
+For cast-related keywords, use this exact structure:
 
-Generate:
+<h2>Who Is in the Cast of [Show Name]?</h2>
 
-* Cast overview table
-* Main cast members
-* Character guide
-* Actor background information
-* Notable previous roles
-* Interesting facts
-* FAQs
+Short introduction answering the search query immediately.
+
+<h2>Main Cast and Characters</h2>
+
+Create a cast table:
+
+<table>
+<tr>
+<th>Actor</th>
+<th>Character</th>
+<th>Known For</th>
+</tr>
+</table>
+
+After the table, create a separate section for each major cast member.
+
+Example:
+
+<h3>Actor Name as Character Name</h3>
+
+<!-- ACTOR IMAGE: Actor Name -->
+
+<p>Actor background information.</p>
+
+<p>Character information.</p>
+
+<p>Notable previous roles and career highlights.</p>
+
+Use at least 4 to 8 actor sections whenever information is available.
+
+HEADING RULES
+
+Never use headings such as:
+
+* Cast Overview
+* Main Cast Members
+* Character Guide
+* Actor Background Information
+* Interesting Facts
+* Overview
+
+Instead use natural headings such as:
+
+* Who Stars in the Series?
+* Meet the Main Cast
+* Actors and Their Characters
+* Supporting Cast Members
+* Behind the Characters
+* Notable Performances
+
+FAQ RULES
+
+Always provide answers.
+
+Use:
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Question</h3>
+<p>Answer</p>
+
+<h3>Question</h3>
+<p>Answer</p>
+
+TITLE RULES
+
+Never start titles with:
+
+* Exploring
+* Discovering
+* Unveiling
+* Everything About
+* Complete Guide To
+
+Use title styles such as:
+
+Bodies Cast: Actors and Characters Explained
+
+Who Stars in Bodies? Meet the Netflix Cast
+
+Bodies Netflix Cast Guide: Main Actors and Roles
+
+Meet the Cast of Bodies and the Characters They Play
+
+FACTUAL ACCURACY
+
+Do not invent actors.
+
+Do not invent characters.
+
+Do not invent ages.
+
+Do not invent biographies.
+
+If uncertain about a fact, avoid making the claim.
+
+IMAGE PLACEHOLDERS
+
+Before each actor section insert:
+
+<!-- ACTOR IMAGE: Actor Name -->
+
+These placeholders will later be replaced automatically with images.
 
 REVIEW ARTICLE TEMPLATE
 
