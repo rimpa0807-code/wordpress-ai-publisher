@@ -14,6 +14,7 @@ export default async function handler(req, res) {
 
     const keyword = sheetData.keyword;
     const slug = sheetData.slug;
+    const type = (sheetData.type || "").toLowerCase();
 
     // Generate article with OpenAI
     const openaiResponse = await fetch(
@@ -26,7 +27,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
-          temperature: 0.7,
+          temperature: 0.9,
           messages: [
             {
               role: "system",
@@ -84,7 +85,82 @@ Use only:
 <tr>
 <th>
 <td>
+ARTICLE TYPE RULES
 
+The Google Sheet provides an Article Type.
+
+Follow the matching template strictly.
+
+TYPE: cast
+
+- Create a cast article
+- Use actor sections
+- Use actor image placeholders
+- Include cast table
+- Include character details
+- Include actor career information
+
+TYPE: review
+
+- Create a review article
+- Include rating recommendation
+- Plot summary
+- What worked
+- What didn't work
+- Final verdict
+- FAQ section
+
+TYPE: explainer
+
+- Answer the question immediately
+- Provide background information
+- Explain the person, event, character or topic
+- Include FAQs
+
+TYPE: ending_explained
+
+- Explain the ending first
+- Break down major events
+- Explain unanswered questions
+- Include fan theories if relevant
+- Include FAQs
+
+TYPE: release_date
+
+- Focus on renewal status
+- Release updates
+- Production updates
+- Returning cast
+- FAQs
+
+TYPE: true_story
+
+- Explain the real story
+- Compare fact vs fiction
+- Key people involved
+- Public reaction
+- FAQs
+
+TYPE: recommendation
+
+- Recommend multiple shows or movies
+- Explain why each is worth watching
+- Include streaming platform
+- Include FAQs
+
+TYPE: listicle
+
+- Use numbered sections
+- Each item should have its own heading
+- Explain why each item belongs on the list
+- Include FAQs
+
+TYPE: news
+
+- Report recent developments
+- Focus on latest information
+- Avoid speculation
+- Include FAQs
 CAST ARTICLE TEMPLATE
 
 CAST ARTICLE RULES
@@ -279,7 +355,11 @@ Return ONLY valid JSON:
             },
             {
               role: "user",
-              content: keyword
+              content: `
+Keyword: ${keyword}
+
+Article Type: ${type}
+`
             }
           ]
         })
