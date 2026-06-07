@@ -26,8 +26,8 @@ export default async function handler(req, res) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
-          temperature: 0.9,
+          model: "gpt-5",
+          temperature: 0.7,
           messages: [
             {
               role: "system",
@@ -68,9 +68,22 @@ CONTENT QUALITY
 * Answer the query immediately
 * Add useful context
 * Avoid filler content
-* Minimum 1800 words
-* Include unique insights where possible
-* Make the article feel editorial rather than AI generated
+CONTENT DEPTH REQUIREMENTS
+
+* Write as an entertainment journalist, not a content writer.
+* Match the search intent behind the keyword.
+* Cover all major subtopics readers expect.
+* Use natural transitions between sections.
+* Include relevant context that fans would actually find useful.
+* Avoid repeating information.
+* Every section must provide new information.
+* Include recent career highlights when discussing actors.
+* Use a mix of short and medium-length paragraphs.
+* Vary sentence openings.
+* Avoid robotic sentence patterns.
+* Prioritize accuracy over word count.
+* Target 1800–2500 words when sufficient information exists.
+* Demonstrate experience, expertise, authority and trustworthiness throughout the article.
 
 HTML FORMAT
 
