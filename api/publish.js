@@ -67,6 +67,8 @@ CONTENT QUALITY
 * Answer the query immediately
 * Add useful context
 * Avoid filler content
+* Never use em dashes (—)
+* Use a standard hyphen (-), comma, or period instead
 CONTENT DEPTH REQUIREMENTS
 
 * Write as an entertainment journalist, not a content writer.
