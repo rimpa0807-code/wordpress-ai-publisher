@@ -4,7 +4,6 @@ export default async function handler(req, res) {
     // Get next keyword from Google Sheet
     const sheetResponse = await fetch(process.env.SHEET_URL);
     const sheetData = await sheetResponse.json();
-
     if (!sheetData.keyword) {
       return res.status(200).json({
         success: false,
