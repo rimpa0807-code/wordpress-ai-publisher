@@ -411,7 +411,7 @@ Article Type: ${type}
           content: article.content,
           excerpt: article.metaDescription,
           slug: slug.replace("/", ""),
-          status: "draft",
+          status: "Publish",
 
           meta: {
             _yoast_wpseo_title: article.seoTitle,
