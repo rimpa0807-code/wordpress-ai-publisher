@@ -411,7 +411,7 @@ Article Type: ${type}
           content: article.content,
           excerpt: article.metaDescription,
           slug: slug.replace("/", ""),
-          status: "Publish",
+          status: "draft",
 
           meta: {
             _yoast_wpseo_title: article.seoTitle,
@@ -421,23 +421,6 @@ Article Type: ${type}
         })
       }
     );
-
-    const wpPost = await wpResponse.json();
-    await fetch("https://www.instapaper.com/api/add", {
-  method: "POST",
-  headers: {
-    Authorization:
-      "Basic " +
-      Buffer.from(
-        `${process.env.INSTAPAPER_USERNAME}:${process.env.INSTAPAPER_PASSWORD}`
-      ).toString("base64"),
-    "Content-Type": "application/x-www-form-urlencoded"
-  },
-  body: new URLSearchParams({
-    url: wpPost.link,
-    title: article.title
-  })
-});
 
     // Mark Google Sheet Row as Published
     await fetch(process.env.SHEET_URL, {
